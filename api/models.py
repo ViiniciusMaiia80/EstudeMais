@@ -1,13 +1,12 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
+from django import forms
 
 
 class Usuario(models.Model):
     nome = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    senha = models.CharField(max_length=128) 
+    senha = models.CharField(max_length=128)
     data_criacao = models.DateTimeField(auto_now_add=True)
 
     class Meta:
