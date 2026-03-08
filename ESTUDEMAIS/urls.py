@@ -18,7 +18,7 @@ route.register(r'professor', professorviewset.ProfessorViewSet, basename="profes
 route.register(r'questao', questaoviewset.QuestaoViewSet, basename="questao")
 route.register(r'alternativa', alternativaviewset.AlternativaViewSet, basename="alternativa")
 route.register(r'flashcard', flashcardviewset.FlashcardViewSet, basename="flashcard")
-route.register(r'resposta do aluno', respostaalunoviewset.RespostaAlunoViewSet, basename="respostaAluno")
+route.register(r'resposta-aluno', respostaalunoviewset.RespostaAlunoViewSet, basename="respostaAluno")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
