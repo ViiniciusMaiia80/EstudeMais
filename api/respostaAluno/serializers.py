@@ -3,5 +3,5 @@ from api import models
 
 class RespostaAlunoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Flashcard
+        model = models.RespostaAluno
         fields = '__all__'
