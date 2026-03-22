@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class Usuario(models.Model):
@@ -29,22 +30,76 @@ class Professor(Usuario):
 
 
 class Materia(models.Model):
+    TIPO_CHOICES = [
+        ('pessoal', 'Pessoal'),
+        ('institucional', 'Institucional'),
+    ]
+    
     nome = models.CharField(max_length=120)
     data_criacao = models.DateTimeField(auto_now_add=True)
+    tipo = models.CharField(
+        max_length=15,
+        choices=TIPO_CHOICES,
+        default='institucional'
+    )
+    class Meta:
+        ordering = ["nome"]
+    
+    # Vinculação condicional baseada no tipo
+    professor = models.ForeignKey(
+        Professor,
+        on_delete=models.CASCADE,
+        related_name="materias_institucionais",
+        null=True,
+        blank=True,
+        help_text="Professor responsável (para matérias institucionais)"
+    )
+    
+    aluno = models.ForeignKey(
+        Aluno,  # Assumindo que você tem um modelo Aluno
+        on_delete=models.CASCADE,
+        related_name="materias_pessoais",
+        null=True,
+        blank=True,
+        help_text="Aluno responsável (para matérias pessoais)"
+    )
 
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Executa validações
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        tipo_display = dict(self.TIPO_CHOICES).get(self.tipo, self.tipo)
+        return f"{self.nome} ({tipo_display})"
+    
+class MateriaInstitucional(models.Model):
+    nome = models.CharField(max_length=120, unique=True)
     criador = models.ForeignKey(
         Professor,
         on_delete=models.CASCADE,
-        related_name="materias_criadas",
+        null=True,
+        blank=True,
+        help_text="Professor responsável (para matérias institucionais)"
     )
 
     class Meta:
-        unique_together = ("criador", "nome")
         ordering = ["nome"]
 
     def __str__(self):
-        return self.nome
+        return f"Institucional: {self.nome}"
 
+class MateriaPessoal(models.Model):
+    nome = models.CharField(max_length=120, unique=True)
+    criador = models.ForeignKey(
+        Aluno,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text="Aluno responsável ( para matérias pessoais)"
+    )
+
+    def __str__(self):
+        return f"Pessoal: {self.nome}"
 
 class Questao(models.Model):
     data_criacao = models.DateTimeField(auto_now_add=True)
