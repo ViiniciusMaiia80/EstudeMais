@@ -1,3 +1,4 @@
+# serializers.py
 from rest_framework import serializers
 from api import models
 
@@ -11,7 +12,6 @@ class MateriaSerializer(serializers.ModelSerializer):
         professor = data.get('professor')
         aluno = data.get('aluno')
 
-        # Validações específicas do clean()
         if tipo == 'institucional' and not professor:
             raise serializers.ValidationError(
                 {'professor': 'Matéria institucional deve ter um professor responsável.'}
@@ -28,3 +28,14 @@ class MateriaSerializer(serializers.ModelSerializer):
             )
 
         return data
+    
+    # serializers.py - Adicione estes serializers
+class MateriaInstitucionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MateriaInstitucional
+        fields = '__all__'
+
+class MateriaPessoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.MateriaPessoal
+        fields = '__all__'

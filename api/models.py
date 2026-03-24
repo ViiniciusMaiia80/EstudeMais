@@ -29,23 +29,27 @@ class Professor(Usuario):
         verbose_name_plural = "Professores"
 
 
+# models.py
+from django.core.exceptions import ValidationError
+from django.db import transaction
+
 class Materia(models.Model):
     TIPO_CHOICES = [
         ('pessoal', 'Pessoal'),
         ('institucional', 'Institucional'),
     ]
     
-    nome = models.CharField(max_length=120)
+    nome = models.CharField(max_length=120, unique=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     tipo = models.CharField(
         max_length=15,
         choices=TIPO_CHOICES,
         default='institucional'
     )
+    
     class Meta:
         ordering = ["nome"]
     
-    # Vinculação condicional baseada no tipo
     professor = models.ForeignKey(
         Professor,
         on_delete=models.CASCADE,
@@ -56,7 +60,7 @@ class Materia(models.Model):
     )
     
     aluno = models.ForeignKey(
-        Aluno,  # Assumindo que você tem um modelo Aluno
+        Aluno,
         on_delete=models.CASCADE,
         related_name="materias_pessoais",
         null=True,
@@ -64,9 +68,40 @@ class Materia(models.Model):
         help_text="Aluno responsável (para matérias pessoais)"
     )
 
+    def clean(self):
+        if self.tipo == 'institucional' and not self.professor:
+            raise ValidationError('Matéria institucional deve ter um professor responsável.')
+        
+        if self.tipo == 'pessoal' and not self.aluno:
+            raise ValidationError('Matéria pessoal deve ter um aluno responsável.')
+        
+        if self.professor and self.aluno:
+            raise ValidationError('Uma matéria não pode ter tanto professor quanto aluno responsável.')
+
+    @transaction.atomic
     def save(self, *args, **kwargs):
         self.full_clean()  # Executa validações
         super().save(*args, **kwargs)
+        
+        # Cria registro na tabela correspondente
+        if self.tipo == 'institucional':
+            MateriaInstitucional.objects.update_or_create(
+                nome=self.nome,
+                defaults={'criador': self.professor}
+            )
+        elif self.tipo == 'pessoal':
+            MateriaPessoal.objects.update_or_create(
+                nome=self.nome,
+                defaults={'criador': self.aluno}
+            )
+
+    def delete(self, *args, **kwargs):
+        # Remove também da tabela correspondente
+        if self.tipo == 'institucional':
+            MateriaInstitucional.objects.filter(nome=self.nome).delete()
+        elif self.tipo == 'pessoal':
+            MateriaPessoal.objects.filter(nome=self.nome).delete()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         tipo_display = dict(self.TIPO_CHOICES).get(self.tipo, self.tipo)
