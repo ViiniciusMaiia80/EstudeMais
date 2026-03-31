@@ -9,6 +9,7 @@ from api.questao import viewset as questaoviewset
 from api.alternativa import viewset as alternativaviewset
 from api.flashcard import viewset as flashcardviewset
 from api.respostaAluno import viewset as respostaalunoviewset
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 route = routers.DefaultRouter()
 route.register(r'usuario', usuarioviewset.UsuarioViewSet, basename="usuario")
@@ -22,5 +23,7 @@ route.register(r'resposta-aluno', respostaalunoviewset.RespostaAlunoViewSet, bas
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(route.urls))
+    path('', include(route.urls)),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
