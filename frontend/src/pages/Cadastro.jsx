@@ -1,14 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo-estudemais.svg";
 
 function Cadastro() {
+  const navigate = useNavigate();
 
-  // 🔹 Estados
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [perfil, setPerfil] = useState("");
 
-  // 🔹 Validação dos campos
   const validar = () => {
     if (!nome) {
       alert("Nome é obrigatório");
@@ -33,83 +34,101 @@ function Cadastro() {
     return true;
   };
 
-  // 🔹 Envio para o backend
   const handleCadastro = () => {
-
-    // primeiro valida
     if (!validar()) return;
 
-    // depois envia para o Django
     fetch("http://127.0.0.1:8000/usuario/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        nome: nome,
-        email: email,
-        senha: senha,
-        perfil: perfil
+        nome,
+        email,
+        senha,
+        tipo_usuario: perfil,
       }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Cadastro realizado:", data);
+      .then(async (res) => {
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert("Erro do backend: " + JSON.stringify(data));
+          throw new Error("Erro ao cadastrar");
+        }
+
+        return data;
+      })
+      .then(() => {
         alert("Cadastro realizado com sucesso!");
+        navigate("/login");
       })
       .catch((err) => {
-        console.error("Erro:", err);
-        alert("Erro ao cadastrar");
+        console.error(err);
       });
   };
 
-  // 🔹 Interface
   return (
-    <div>
-      <h1>Crie sua conta</h1>
+    <div className="auth-page">
+      <div className="auth-logo">
+        <img src={logo} alt="EstudeMais" />
+      </div>
 
-      <input
-        type="text"
-        placeholder="Nome completo"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
+      <div className="auth-card">
+        <h1>Crie sua conta</h1>
 
-      <br /><br />
+        <div className="form-group">
+          <label>Nome completo</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="Digite seu nome"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+        </div>
 
-      <input
-        type="email"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <div className="form-group">
+          <label>E-mail</label>
+          <input
+            className="form-input"
+            type="email"
+            placeholder="seu@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-      <br /><br />
+        <div className="form-group">
+          <label>Senha</label>
+          <input
+            className="form-input"
+            type="password"
+            placeholder="Mínimo 6 caracteres"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
+        </div>
 
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
+        <div className="form-group">
+          <label>Sou</label>
+          <select
+            className="form-select"
+            value={perfil}
+            onChange={(e) => setPerfil(e.target.value)}
+          >
+            <option value="">Selecione uma opção</option>
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+          </select>
+        </div>
 
-      <br /><br />
-
-      <select
-        value={perfil}
-        onChange={(e) => setPerfil(e.target.value)}
-      >
-        <option value="">Selecione um perfil</option>
-        <option value="aluno">Aluno</option>
-        <option value="professor">Professor</option>
-      </select>
-
-      <br /><br />
-
-      <button onClick={handleCadastro}>
-        Cadastrar
-      </button>
-
+        <div className="auth-actions">
+          <button type="button" className="auth-button" onClick={handleCadastro}>
+            Cadastrar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
