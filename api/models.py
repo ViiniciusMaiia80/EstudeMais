@@ -29,8 +29,8 @@ class Professor(Usuario):
 
 
 class Materia(models.Model):
-    nome = models.CharField(max_length=120, help_text="Nome da matéria.")
-    data_criacao = models.DateTimeField(auto_now_add=True, help_text="Data de criação da matéria.")
+    nome = models.CharField(max_length=120)
+    data_criacao = models.DateTimeField(auto_now_add=True)
 
     criador = models.ForeignKey(
         Professor,
@@ -48,29 +48,26 @@ class Materia(models.Model):
 
 
 class Questao(models.Model):
-    data_criacao = models.DateTimeField(auto_now_add=True)
-
     materia = models.ForeignKey(
         Materia,
         on_delete=models.CASCADE,
         related_name="questoes",
         help_text="Matéria à qual a questão pertence."
     )
-
     professor = models.ForeignKey(
         Professor,
         on_delete=models.CASCADE,
         related_name="questoes_criadas",
         help_text="Professor responsável pela criação da questão."
     )
-
+    data_criacao = models.DateTimeField(auto_now_add=True, help_text="Data de criação da questão.")
     def __str__(self):
         return f"Questão #{self.id} ({self.materia.nome})"
 
 
 class Alternativa(models.Model):
-    texto = models.CharField(max_length=255, help_text="Texto da alternativa.")
-    eh_correta = models.BooleanField(default=False, help_text="Indica se esta alternativa é a correta.")
+    texto = models.CharField(max_length=255)
+    eh_correta = models.BooleanField(default=False)
 
     questao = models.ForeignKey(
         Questao,
@@ -84,9 +81,9 @@ class Alternativa(models.Model):
 
 
 class Flashcard(models.Model):
-    titulo = models.CharField(max_length=120, help_text="Título do flashcard.")
-    pergunta = models.TextField(help_text="Pergunta principal do flashcard.")
-    resposta = models.TextField(help_text="Resposta do flashcard.")
+    titulo = models.CharField(max_length=120)
+    pergunta = models.TextField()
+    resposta = models.TextField()
 
     aluno = models.ForeignKey(
         Aluno,
@@ -94,7 +91,6 @@ class Flashcard(models.Model):
         related_name="flashcards",
         help_text="Aluno responsável pela criação do flashcard."
     )
-
     materia = models.ForeignKey(
         Materia,
         on_delete=models.CASCADE,
@@ -103,12 +99,12 @@ class Flashcard(models.Model):
     )
 
     def __str__(self):
-        return self.titulo
+        return f"Flashcard {self.id}"
 
 
 class RespostaAluno(models.Model):
-    esta_correta = models.BooleanField(default=False, help_text="Indica se a resposta do aluno está correta.")
-    data_resposta = models.DateTimeField(auto_now_add=True, help_text="Data em que a resposta foi enviada.")
+    esta_correta = models.BooleanField(default=False)
+    data_resposta = models.DateTimeField(auto_now_add=True)
 
     aluno = models.ForeignKey(
         Aluno,
@@ -116,14 +112,12 @@ class RespostaAluno(models.Model):
         related_name="respostas",
         help_text="Aluno que respondeu a questão."
     )
-
     questao = models.ForeignKey(
         Questao,
         on_delete=models.CASCADE,
         related_name="respostas",
         help_text="Questão respondida pelo aluno."
     )
-
     alternativa_marcada = models.ForeignKey(
         Alternativa,
         on_delete=models.SET_NULL,
