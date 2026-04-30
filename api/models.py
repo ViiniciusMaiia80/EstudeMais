@@ -81,7 +81,6 @@ class Alternativa(models.Model):
 
 
 class Flashcard(models.Model):
-    titulo = models.CharField(max_length=120)
     pergunta = models.TextField()
     resposta = models.TextField()
 
