@@ -54,6 +54,13 @@ class Questao(models.Model):
         related_name="questoes",
         help_text="Matéria à qual a questão pertence."
     )
+    enunciado = models.CharField(
+        max_length = 255,
+        blank= False,
+        default = True
+        )
+    
+    
     professor = models.ForeignKey(
         Professor,
         on_delete=models.CASCADE,
