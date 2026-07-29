@@ -1,4 +1,4 @@
-import Logo from "../../ui/Logo/Logo";
+import { Logo } from "../../ui";
 
 function AuthLayout({ title, children }) {
   return (

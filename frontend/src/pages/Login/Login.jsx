@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
-import FormField from "../../components/ui/FormField/FormField";
-import Button from "../../components/ui/Button/Button";
+import { AuthLayout } from "../../components/layout";
+import { FormField, Button } from "../../components/ui";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ function Login() {
       <FormField label="Senha" type="password" placeholder="Sua senha" />
 
       <div className="mt-3">
-        <Button variant="primary" fullWidth onClick={() => navigate("/")}>
+        <Button variant="primary" fullWidth onClick={() => navigate("/inicio")}>
           Entrar
         </Button>
       </div>
