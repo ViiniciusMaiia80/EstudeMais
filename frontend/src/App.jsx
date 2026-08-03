@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./App.css";
 
-import Home from "./pages/Home";
-import CriarConta from "./pages/CriarConta";
-import Cadastro from "./pages/Cadastro";
-import Login from "./pages/Login";
+import Home from "./pages/Home/Home";
+import CriarConta from "./pages/CriarConta/CriarConta";
+import Cadastro from "./pages/Cadastro/Cadastro";
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
