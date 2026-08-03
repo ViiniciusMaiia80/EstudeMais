@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Logo from "../../components/ui/Logo/Logo";
-import Button from "../../components/ui/Button/Button";
+import { Logo, Button } from "../../components/ui";
 import heroImage from "../../assets/img-home.png";
 
 function Home() {

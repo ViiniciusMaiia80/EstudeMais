@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
-import Button from "../../components/ui/Button/Button";
+import { AuthLayout } from "../../components/layout";
+import { Button } from "../../components/ui";
 
 function CriarConta() {
   const navigate = useNavigate();

@@ -17,7 +17,8 @@ function Button({
     link: "bg-transparent text-link border-transparent font-normal text-[13px] p-0",
   };
 
-  const sizing = fullWidth ? "w-full h-[42px]" : "px-[18px] py-2";
+  const sizing =
+    variant === "link" ? "" : fullWidth ? "w-full h-[42px]" : "px-[18px] py-2";
 
   return (
     <button

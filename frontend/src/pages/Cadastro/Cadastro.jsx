@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthLayout from "../../components/layout/AuthLayout/AuthLayout";
-import FormField from "../../components/ui/FormField/FormField";
-import Button from "../../components/ui/Button/Button";
+import { AuthLayout } from "../../components/layout";
+import { FormField, Button } from "../../components/ui";
 
 function Cadastro() {
   const navigate = useNavigate();
